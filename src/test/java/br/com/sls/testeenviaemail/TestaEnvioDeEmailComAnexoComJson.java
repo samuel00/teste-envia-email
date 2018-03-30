@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-import com.jayway.restassured.path.json.JsonPath;
-
 import br.com.sls.testeenviaemail.comum.PropriedadeAnexo;
 import br.com.sls.testeenviaemail.modelo.EmailComAnexoDTO;
 import br.com.sls.testeenviaemail.modelo.PropriedadeArquivo;
