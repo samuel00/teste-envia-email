@@ -18,6 +18,40 @@
 		<jayway.jsonpath.version>2.2.0</jayway.jsonpath.version>
 	</properties>
 
+
+	<!-- Profile configuration -->
+	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<build.profile.id>local</build.profile.id>
+			</properties>
+		</profile>
+		<!-- The configuration of the production profile -->
+		<profile>
+			<id>desenvolvimento</id>
+			<properties>
+				<build.profile.id>desenvolvimento</build.profile.id>
+			</properties>
+		</profile>
+		<!-- The configuration of the testing profile -->
+		<profile>
+			<id>homologacao</id>
+			<properties>
+				<build.profile.id>homologacao</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
+			<id>producao</id>
+			<properties>
+				<build.profile.id>producao</build.profile.id>
+			</properties>
+		</profile>
+	</profiles>
+
 	<dependencies>
 		<!-- REST ASSURET -->
 
@@ -66,7 +100,17 @@
 			<version>${springframework.version}</version>
 		</dependency>
 	</dependencies>
+
 	<build>
+		<filters>
+			<filter>profiles/${build.profile.id}.properties</filter>
+		</filters>
+		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

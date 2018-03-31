@@ -1,5 +1,6 @@
 package br.com.sls.testeenviaemail;
 
+import static com.jayway.restassured.RestAssured.baseURI;
 import static com.jayway.restassured.RestAssured.given;
 
 import org.junit.Before;
@@ -7,6 +8,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import br.com.sls.testeenviaemail.comum.CriadorDeEmail;
+import br.com.sls.testeenviaemail.comum.Propriedade;
 import br.com.sls.testeenviaemail.modelo.EmailComAnexoDTO;
 
 public class TestaEnvioDeEmailComAnexoComJson {
@@ -16,6 +18,7 @@ public class TestaEnvioDeEmailComAnexoComJson {
 
 	@Before
 	public void setUp() {
+		baseURI = Propriedade.configuracoes.getProperty("base.url.teste");
 		this.urlRecurso = URL_RECURSO;
 	}
 	
