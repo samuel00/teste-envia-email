@@ -5,73 +5,58 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
 
 import com.jayway.restassured.path.json.JsonPath;
 
+import br.com.sls.testeenviaemail.comum.CriadorDeEmail;
 import br.com.sls.testeenviaemail.modelo.EmailDTO;
 import br.com.sls.testeenviaemail.modelo.HTTPResponse;
 
 public class TestaEnviaEmailSimples {
-	
-	private EmailDTO emailCompletoDTO;
-	private EmailDTO emailSemAssuntoDTO;
-	private EmailDTO emailSemDestinatarioDTO;
-	private EmailDTO emailSemTextoDTO;
+
 	protected String urlRecurso;
-	
+
 	@Before
 	public void setUp() {
-		emailCompletoDTO = new EmailDTO("ifpa.santana@gmail.com", "TESTE AUTOMATIZADO DE EMAIL",
-				"Parabéns seu teste funcionou");
-		emailSemAssuntoDTO = new EmailDTO("ifpa.santana@gmail.com", null, "Parabéns seu teste funcionou");
-		emailSemDestinatarioDTO = new EmailDTO(null, "TESTE AUTOMATIZADO DE EMAIL", "Parabéns seu teste funcionou");
-		emailSemTextoDTO = new EmailDTO("ifpa.santana@gmail.com", "TESTE AUTOMATIZADO DE EMAIL", null);
-		this.urlRecurso = "envia-email/v2/simples";
+		this.urlRecurso = "envia-email/simples";
 	}
-	
-	
+
+	private JsonPath enviaRequisicao(EmailDTO emailDTO, int StatusCodeEsperado) {
+		return given().header("Accept", "application/json").contentType("application/json").body(emailDTO).expect()
+				.statusCode(StatusCodeEsperado).when().post(this.urlRecurso).andReturn().jsonPath();
+	}
+
 	@Test
 	public void testarEnvioEmailSimplesSemDestinatario() {
-		JsonPath jsonPath = given().header("Accept", "application/json").contentType("application/json")
-				.body(emailSemDestinatarioDTO).expect().statusCode(400).when().post(this.urlRecurso).andReturn()
-				.jsonPath();
-
+		EmailDTO emailSemDestinatarioDTO = new CriadorDeEmail().criarEmailSemDestinatario().concluirEmailSemAnexo();
+		JsonPath jsonPath = enviaRequisicao(emailSemDestinatarioDTO, HttpStatus.BAD_REQUEST.value());
 		HTTPResponse hTTPResponse = jsonPath.getObject("", HTTPResponse.class);
 		assertEquals("O campo destinatario não pode ser nulo!", hTTPResponse.getMensagem());
-
 	}
 
 	@Test
 	public void testarEnvioEmailSimplesSemTexto() {
-		JsonPath jsonPath = given().header("Accept", "application/json").contentType("application/json")
-				.body(emailSemTextoDTO).expect().statusCode(400).when().post(this.urlRecurso).andReturn()
-				.jsonPath();
-
+		EmailDTO emailSemTextoDTO = new CriadorDeEmail().criarEmailSemTexto().concluirEmailSemAnexo();
+		JsonPath jsonPath = enviaRequisicao(emailSemTextoDTO, HttpStatus.BAD_REQUEST.value());
 		HTTPResponse hTTPResponse = jsonPath.getObject("", HTTPResponse.class);
 		assertEquals("O campo texto não pode ser nulo!", hTTPResponse.getMensagem());
-
 	}
-	
+
 	@Test
 	public void testarEnvioEmailSimplesSemAssunto() {
-		JsonPath jsonPath = given().header("Accept", "application/json").contentType("application/json")
-				.body(emailSemAssuntoDTO).expect().statusCode(400).when().post(this.urlRecurso).andReturn()
-				.jsonPath();
-
+		EmailDTO emailSemAssuntoDTO = new CriadorDeEmail().criarEmailSemAssunto().concluirEmailSemAnexo();
+		JsonPath jsonPath = enviaRequisicao(emailSemAssuntoDTO, HttpStatus.BAD_REQUEST.value());
 		HTTPResponse hTTPResponse = jsonPath.getObject("", HTTPResponse.class);
 		assertEquals("O campo assunto não pode ser nulo!", hTTPResponse.getMensagem());
-
 	}
 
 	@Test
 	public void testarEnvioEmailSimples() {
-		JsonPath jsonPath = given().header("Accept", "application/json").contentType("application/json")
-				.body(emailCompletoDTO).expect().statusCode(200).when().post(this.urlRecurso).andReturn()
-				.jsonPath();
-
+		EmailDTO emailCompletoDTO = new CriadorDeEmail().criarEmailCompleto().concluirEmailSemAnexo();
+		JsonPath jsonPath = enviaRequisicao(emailCompletoDTO, HttpStatus.OK.value());
 		HTTPResponse hTTPResponse = jsonPath.getObject("", HTTPResponse.class);
 		assertEquals("Requisicao realizada com sucesso!", hTTPResponse.getMensagem());
-
 	}
 
 }

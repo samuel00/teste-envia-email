@@ -8,21 +8,23 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
+import br.com.sls.testeenviaemail.comum.CriadorDeEmail;
 import br.com.sls.testeenviaemail.modelo.EmailDTO;
 
 public class TestaEnvioDeEmailComAnexo {
 
 	private static final String URL_RECURSO = "/envia-email/multipart/comanexo";
+	private static final String CAMINHO_ARQUIVO1 = "/home/samuel/activity-diagram-api-manager.png";
+	private static final String CAMINHO_ARQUIVO2 = "/home/samuel/diagramas-api-manager.asta";
 	private EmailDTO emailDTO;
 	private File arquivo1;
 	private File arquivo2;
 
 	@Before
 	public void setUp() {
-		emailDTO = new EmailDTO("ifpa.santana@gmail.com", "TESTE AUTOMATIZADO DE EMAIL",
-				"Parabéns seu teste funcionou");
-		arquivo1 = new File("/home/samuel/activity-diagram-api-manager.png");
-		arquivo2 = new File("/home/samuel/diagramas-api-manager.asta");
+		emailDTO = new CriadorDeEmail().criarEmailCompleto().concluirEmailSemAnexo();
+		arquivo1 = new File(CAMINHO_ARQUIVO1);
+		arquivo2 = new File(CAMINHO_ARQUIVO2);
 	}
 
 	@Test
