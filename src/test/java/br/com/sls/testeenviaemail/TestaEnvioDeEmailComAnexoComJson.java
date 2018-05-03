@@ -13,7 +13,7 @@ import br.com.sls.testeenviaemail.modelo.EmailComAnexoDTO;
 
 public class TestaEnvioDeEmailComAnexoComJson {
 
-	private static final String URL_RECURSO = "/envia-email/comanexo";
+	private static final String URL_RECURSO = "/comanexo";
 	protected String urlRecurso;
 
 	@Before
